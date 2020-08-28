@@ -12,8 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.gridsuite.cgmes.boundary.server.dto.BoundaryInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +35,6 @@ import java.util.Optional;
 @Api(tags = "cgmes-boundary-server")
 @ComponentScan(basePackageClasses = CgmesBoundaryService.class)
 public class CgmesBoundaryController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CgmesBoundaryController.class);
 
     @Inject
     private CgmesBoundaryService cgmesBoundaryService;

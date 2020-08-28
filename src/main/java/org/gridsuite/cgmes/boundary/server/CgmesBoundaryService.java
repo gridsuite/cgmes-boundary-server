@@ -6,7 +6,6 @@
  */
 package org.gridsuite.cgmes.boundary.server;
 
-import com.powsybl.commons.PowsyblException;
 import org.gridsuite.cgmes.boundary.server.dto.BoundaryInfo;
 import org.gridsuite.cgmes.boundary.server.fullmodel.FullModel;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryEntity;
@@ -19,8 +18,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,12 +39,8 @@ class CgmesBoundaryService {
     Optional<BoundaryInfo> getBoundary(String boundaryId) {
         Optional<BoundaryEntity> boundary = boundaryRepository.findById(boundaryId);
         if (boundary.isPresent()) {
-            try {
-                String boundaryXml = new String(boundary.get().getBoundary().array(), "UTF-8");
-                return Optional.of(new BoundaryInfo(boundary.get().getId(), boundary.get().getFilename(), boundaryXml));
-            } catch (UnsupportedEncodingException e) {
-                throw new PowsyblException("Error in boundary content");
-            }
+            String boundaryXml = new String(boundary.get().getBoundary().array(), StandardCharsets.UTF_8);
+            return Optional.of(new BoundaryInfo(boundary.get().getId(), boundary.get().getFilename(), boundaryXml));
         } else {
             return Optional.empty();
         }
@@ -73,12 +68,8 @@ class CgmesBoundaryService {
     List<BoundaryInfo> getBoundariesList() {
         List<BoundaryEntity> boundaries = boundaryRepository.findAll();
         return boundaries.stream().map(b -> {
-            try {
-                String boundaryXml = new String(b.getBoundary().array(), "UTF-8");
-                return new BoundaryInfo(b.getId(), b.getFilename(), boundaryXml);
-            } catch (UnsupportedEncodingException e) {
-                throw new PowsyblException("Error in boundary content");
-            }
+            String boundaryXml = new String(b.getBoundary().array(), StandardCharsets.UTF_8);
+            return new BoundaryInfo(b.getId(), b.getFilename(), boundaryXml);
         }).collect(Collectors.toList());
     }
 }
