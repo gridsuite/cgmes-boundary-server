@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: cgmes-boundary-server
+
+server:
+  port: 5021
