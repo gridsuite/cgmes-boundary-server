@@ -38,18 +38,12 @@ class CgmesBoundaryService {
 
     Optional<BoundaryInfo> getBoundary(String boundaryId) {
         Optional<BoundaryEntity> boundary = boundaryRepository.findById(boundaryId);
-        if (boundary.isPresent()) {
-            String boundaryXml = new String(boundary.get().getBoundary().array(), StandardCharsets.UTF_8);
-            return Optional.of(new BoundaryInfo(boundary.get().getId(), boundary.get().getFilename(), boundaryXml));
-        } else {
-            return Optional.empty();
-        }
+        return boundary.map(b -> new BoundaryInfo(b.getId(), b.getFilename(), new String(b.getBoundary().array(), StandardCharsets.UTF_8)));
     }
 
     String importBoundary(MultipartFile mpfFile) {
         String id;
-        try {
-            Reader reader = new InputStreamReader(new ByteArrayInputStream(mpfFile.getBytes()));
+        try (Reader reader = new InputStreamReader(new ByteArrayInputStream(mpfFile.getBytes()))) {
             FullModel fullModel = FullModel.parse(reader);
             id = fullModel.getId();
 
@@ -58,7 +52,6 @@ class CgmesBoundaryService {
 
             BoundaryEntity entity = new BoundaryEntity(fullModel.getId(), filename, buf);
             boundaryRepository.insert(entity);
-
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
