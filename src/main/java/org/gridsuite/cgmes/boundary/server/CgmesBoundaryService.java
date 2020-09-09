@@ -6,8 +6,8 @@
  */
 package org.gridsuite.cgmes.boundary.server;
 
+import com.powsybl.cgmes.model.FullModel;
 import org.gridsuite.cgmes.boundary.server.dto.BoundaryInfo;
-import org.gridsuite.cgmes.boundary.server.fullmodel.FullModel;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryEntity;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryRepository;
 import org.springframework.stereotype.Service;

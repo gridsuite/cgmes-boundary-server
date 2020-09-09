@@ -48,7 +48,7 @@
         <spring-cloud.version>Hoxton.SR3</spring-cloud.version>
         <springfox.version>2.9.2</springfox.version>
         <embedded-cassandra.version>3.0.3</embedded-cassandra.version>
-        <powsybl-core.version>3.5.0</powsybl-core.version>
+        <powsybl-core.version>3.6.0</powsybl-core.version>
         <metricscore.version>3.2.6</metricscore.version>
         <junit.version>4.13</junit.version>
         <lombok.version>1.18.8</lombok.version>
