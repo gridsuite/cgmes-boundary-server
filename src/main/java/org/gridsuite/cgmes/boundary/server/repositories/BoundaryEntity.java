@@ -11,6 +11,7 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com
@@ -26,9 +27,12 @@ public class BoundaryEntity {
 
     private ByteBuffer boundary;
 
-    public BoundaryEntity(String id, String filename, ByteBuffer boundary) {
+    private LocalDateTime scenarioTime;
+
+    public BoundaryEntity(String id, String filename, ByteBuffer boundary, LocalDateTime scenarioTime) {
         this.id = id;
         this.filename = filename;
         this.boundary = boundary;
+        this.scenarioTime = scenarioTime;
     }
 }
