@@ -50,13 +50,13 @@ class CgmesBoundaryService {
         List<BoundaryInfo> boundaries = getBoundariesList();
         final String regex = String.format(REGEX, profile);
         BoundaryInfo lastBoundary = getFirstBoundaryOfProfile(boundaries, regex);
+        if (lastBoundary == null) {
+            throw new PowsyblException("Boundary not found for profile " + profile);
+        }
         for (BoundaryInfo boundary : boundaries) {
             if (boundary.getFilename().matches(regex) && boundary.getScenarioTime().isAfter(lastBoundary.getScenarioTime())) {
                 lastBoundary = boundary;
             }
-        }
-        if (lastBoundary == null) {
-            throw new PowsyblException("Boundary not found for profile " + profile);
         }
         return lastBoundary;
     }
