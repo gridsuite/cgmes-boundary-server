@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import springfox.documentation.spring.web.json.Json;
 
 import java.time.LocalDateTime;
 
