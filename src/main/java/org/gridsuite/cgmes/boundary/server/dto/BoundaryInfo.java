@@ -6,10 +6,12 @@
  */
 package org.gridsuite.cgmes.boundary.server.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import springfox.documentation.spring.web.json.Json;
 
 import java.time.LocalDateTime;
 
@@ -27,7 +29,8 @@ public class BoundaryInfo {
 
     private String filename;
 
-    private String boundary;
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private LocalDateTime scenarioTime;
+
+    private String boundary;
 }
