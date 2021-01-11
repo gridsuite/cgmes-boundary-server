@@ -42,7 +42,7 @@ class CgmesBoundaryService {
 
     Optional<BoundaryInfo> getBoundary(String boundaryId) {
         Optional<BoundaryEntity> boundary = boundaryRepository.findById(boundaryId);
-        return boundary.map(b -> new BoundaryInfo(b.getId(), b.getFilename(), new String(b.getBoundary().array(), StandardCharsets.UTF_8), b.getScenarioTime()));
+        return boundary.map(b -> new BoundaryInfo(b.getId(), b.getFilename(), b.getScenarioTime(), new String(b.getBoundary().array(), StandardCharsets.UTF_8)));
     }
 
     BoundaryInfo getLastBoundary(String profile) {
@@ -83,7 +83,7 @@ class CgmesBoundaryService {
         List<BoundaryEntity> boundaries = boundaryRepository.findAll();
         return boundaries.stream().map(b -> {
             String boundaryXml = new String(b.getBoundary().array(), StandardCharsets.UTF_8);
-            return new BoundaryInfo(b.getId(), b.getFilename(), boundaryXml, b.getScenarioTime());
+            return new BoundaryInfo(b.getId(), b.getFilename(), b.getScenarioTime(), boundaryXml);
         }).collect(Collectors.toList());
     }
 }
