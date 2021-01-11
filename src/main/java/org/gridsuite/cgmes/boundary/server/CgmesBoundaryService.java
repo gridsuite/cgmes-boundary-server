@@ -22,7 +22,6 @@ import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Service
 class CgmesBoundaryService {
-    private static final String REGEX = "^(.*?(__ENTSOE_%sBD_).*(.xml))$";
+    private static final String REGEX = "^(.*(__ENTSOE_%sBD_).*(.xml))$";
 
     private BoundaryRepository boundaryRepository;
 
@@ -49,28 +48,17 @@ class CgmesBoundaryService {
     BoundaryInfo getLastBoundary(String profile) {
         List<BoundaryInfo> boundaries = getBoundariesList();
         final String regex = String.format(REGEX, profile);
-        BoundaryInfo lastBoundary = getFirstBoundaryOfProfile(boundaries, regex);
-        if (lastBoundary == null) {
+        Optional<BoundaryInfo> firstBoundary = boundaries.stream().filter(boundaryInfo -> boundaryInfo.getFilename().matches(regex)).findFirst();
+        if (firstBoundary.isEmpty()) {
             throw new PowsyblException("Boundary not found for profile " + profile);
         }
+        BoundaryInfo mostRecentBoundary = firstBoundary.get();
         for (BoundaryInfo boundary : boundaries) {
-            if (boundary.getFilename().matches(regex) && boundary.getScenarioTime().isAfter(lastBoundary.getScenarioTime())) {
-                lastBoundary = boundary;
+            if (boundary.getFilename().matches(regex) && boundary.getScenarioTime().isAfter(mostRecentBoundary.getScenarioTime())) {
+                mostRecentBoundary = boundary;
             }
         }
-        return lastBoundary;
-    }
-
-    private static BoundaryInfo getFirstBoundaryOfProfile(List<BoundaryInfo> boundaries, String regex) {
-        Iterator<BoundaryInfo> it = boundaries.iterator();
-        BoundaryInfo elem;
-        while (it.hasNext()) {
-            elem = it.next();
-            if (elem.getFilename().matches(regex)) {
-                return  elem;
-            }
-        }
-        return null;
+        return mostRecentBoundary;
     }
 
     String importBoundary(MultipartFile mpfFile) {

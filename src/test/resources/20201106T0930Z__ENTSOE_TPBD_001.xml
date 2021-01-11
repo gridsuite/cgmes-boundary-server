@@ -2,7 +2,7 @@
 <rdf:RDF xmlns:cim="http://iec.ch/TC57/2013/CIM-schema-cim16#" xmlns:entsoe="http://entsoe.eu/CIM/SchemaExtension/3/1#" xmlns:md="http://iec.ch/TC57/61970-552/ModelDescription/1#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <md:FullModel rdf:about="urn:uuid:55257eed-ac1d-4b99-8828-3e1b47f5e0a1">
     <md:Model.created>2020-06-29T05:24:27.068Z</md:Model.created>
-    <md:Model.scenarioTime>2020-11-29T00:00:00.000Z</md:Model.scenarioTime>
+    <md:Model.scenarioTime>2020-11-29T00:00:04.000Z</md:Model.scenarioTime>
     <md:Model.version>1</md:Model.version>
     <md:Model.description>Official CGM boundary set +//-2 years</md:Model.description>
     <md:Model.modelingAuthoritySet>http://tscnet.eu/EMF</md:Model.modelingAuthoritySet>

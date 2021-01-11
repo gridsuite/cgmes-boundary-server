@@ -90,13 +90,13 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
         });
 
         MockMultipartHttpServletRequestBuilder builderOk3 = MockMvcRequestBuilders.multipart("/v1/boundaries");
-        builderOk2.with(request -> {
+        builderOk3.with(request -> {
             request.setMethod("POST");
             return request;
         });
 
         MockMultipartHttpServletRequestBuilder builderOk4 = MockMvcRequestBuilders.multipart("/v1/boundaries");
-        builderOk2.with(request -> {
+        builderOk4.with(request -> {
             request.setMethod("POST");
             return request;
         });
@@ -168,8 +168,10 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
                 .andExpect(jsonPath("[0].id").value("urn:uuid:58c98e13-d37f-4f0b-82c9-066deda4cd20"))
                 .andExpect(jsonPath("[0].filename").value("20201106T0930Z__ENTSOE_EQBD_001.xml"))
+                .andExpect(jsonPath("[0].scenarioTime").value("2020-11-29T00:00:00"))
                 .andExpect(jsonPath("[1].id").value("urn:uuid:55257eed-ac1d-4b99-8828-3e1b47f5e0a1"))
                 .andExpect(jsonPath("[1].filename").value("20201106T0930Z__ENTSOE_TPBD_001.xml"))
+                .andExpect(jsonPath("[1].scenarioTime").value("2020-11-29T00:00:04"))
                 .andReturn();
     }
 }

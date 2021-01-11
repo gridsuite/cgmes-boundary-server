@@ -51,7 +51,7 @@ public class CgmesBoundaryController {
 
     @GetMapping(value = "/boundaries/last", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get last boundary", response = List.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "The profile of the required boundary (TP or EQ)")})
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The last EQ and TP boundaries")})
     public ResponseEntity<List<BoundaryInfo>> getLastBoundary() {
         List<BoundaryInfo> boundaries = new ArrayList<>();
         BOUNDARY_PROFILES.stream().forEach(profile -> boundaries.add(cgmesBoundaryService.getLastBoundary(profile)));
