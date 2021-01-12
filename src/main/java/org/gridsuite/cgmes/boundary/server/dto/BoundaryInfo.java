@@ -6,10 +6,13 @@
  */
 package org.gridsuite.cgmes.boundary.server.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com>
@@ -24,6 +27,9 @@ public class BoundaryInfo {
     private String id;
 
     private String filename;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private LocalDateTime scenarioTime;
 
     private String boundary;
 }

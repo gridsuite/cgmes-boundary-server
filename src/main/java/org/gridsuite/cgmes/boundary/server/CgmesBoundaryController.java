@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com>
@@ -35,6 +36,7 @@ import java.util.Optional;
 @Api(tags = "cgmes-boundary-server")
 @ComponentScan(basePackageClasses = CgmesBoundaryService.class)
 public class CgmesBoundaryController {
+    private static final List<String> BOUNDARY_PROFILES = List.of("EQ", "TP");
 
     @Inject
     private CgmesBoundaryService cgmesBoundaryService;
@@ -44,6 +46,14 @@ public class CgmesBoundaryController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all boundaries")})
     public ResponseEntity<List<BoundaryInfo>> getBoundariesList() {
         List<BoundaryInfo> boundaries = cgmesBoundaryService.getBoundariesList();
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
+    }
+
+    @GetMapping(value = "/boundaries/last", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get last boundary", response = List.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The last EQ and TP boundaries")})
+    public ResponseEntity<List<BoundaryInfo>> getLastBoundaries() {
+        List<BoundaryInfo> boundaries = BOUNDARY_PROFILES.stream().map(profile -> cgmesBoundaryService.getLastBoundary(profile)).collect(Collectors.toList());
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
