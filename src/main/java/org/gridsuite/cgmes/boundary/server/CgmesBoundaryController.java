@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com>
@@ -53,8 +53,7 @@ public class CgmesBoundaryController {
     @ApiOperation(value = "Get last boundary", response = List.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "The last EQ and TP boundaries")})
     public ResponseEntity<List<BoundaryInfo>> getLastBoundaries() {
-        List<BoundaryInfo> boundaries = new ArrayList<>();
-        BOUNDARY_PROFILES.stream().forEach(profile -> boundaries.add(cgmesBoundaryService.getLastBoundary(profile)));
+        List<BoundaryInfo> boundaries = BOUNDARY_PROFILES.stream().map(profile -> cgmesBoundaryService.getLastBoundary(profile)).collect(Collectors.toList());
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
