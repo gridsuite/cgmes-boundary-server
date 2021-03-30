@@ -86,4 +86,13 @@ class CgmesBoundaryService {
             return new BoundaryInfo(b.getId(), b.getFilename(), b.getScenarioTime(), boundaryXml);
         }).collect(Collectors.toList());
     }
+
+    List<String> getBoundariesIdsList() {
+        List<BoundaryEntity> boundaries = boundaryRepository.findAll();
+        return boundaries.stream().map(b -> b.getId()).collect(Collectors.toList());
+    }
+
+    Boolean boundaryExists(String boundaryId) {
+        return boundaryRepository.findById(boundaryId).isPresent();
+    }
 }

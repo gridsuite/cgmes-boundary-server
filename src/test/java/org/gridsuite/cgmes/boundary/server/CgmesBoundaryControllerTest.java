@@ -32,6 +32,7 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -117,6 +118,13 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andReturn();
         assertEquals("urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358", result.getResponse().getContentAsString());
 
+        // get list of boundary ids
+        mvc.perform(get("/v1/boundaries/ids")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andExpect(content().json("[\"urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71\",\"urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358\"]"));
+
         // get list of boundary set
         mvc.perform(get("/v1/boundaries")
                 .contentType(APPLICATION_JSON))
@@ -126,6 +134,22 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andExpect(jsonPath("[1].id").value("urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358"))
                 .andExpect(jsonPath("[0].filename").value("20191106T0930Z__ENTSOE_EQBD_001.xml"))
                 .andExpect(jsonPath("[1].filename").value("20191106T0930Z__ENTSOE_TPBD_001.xml"));
+
+        // check existence of boundary set
+        result = mvc.perform(get("/v1/boundaries/urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71/exists")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+        assertTrue(Boolean.parseBoolean(result.getResponse().getContentAsString()));
+
+        // check non existence of boundary set
+        result = mvc.perform(get("/v1/boundaries/urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f72/exists")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+        assertFalse(Boolean.parseBoolean(result.getResponse().getContentAsString()));
 
         // get one existing boundary set
         result = mvc.perform(get("/v1/boundaries/urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71")

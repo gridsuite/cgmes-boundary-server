@@ -49,6 +49,14 @@ public class CgmesBoundaryController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
+    @GetMapping(value = "/boundaries/ids", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get all boundaries ids", response = List.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all boundaries ids")})
+    public ResponseEntity<List<String>> getBoundariesIdsList() {
+        List<String> boundaries = cgmesBoundaryService.getBoundariesIdsList();
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
+    }
+
     @GetMapping(value = "/boundaries/last", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get last boundary", response = List.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "The last EQ and TP boundaries")})
@@ -73,5 +81,12 @@ public class CgmesBoundaryController {
     public ResponseEntity<String> importBoundary(@RequestParam("file") MultipartFile boundaryFile) {
         String id = cgmesBoundaryService.importBoundary(boundaryFile);
         return ResponseEntity.ok().body(id);
+    }
+
+    @GetMapping(value = "/boundaries/{boundaryId}/exists")
+    @ApiOperation(value = "Check if the boundary exists", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "If the boundary exists or not.")})
+    public ResponseEntity<Boolean> boundaryExists(@PathVariable("boundaryId") String boundaryId) {
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cgmesBoundaryService.boundaryExists(boundaryId));
     }
 }
