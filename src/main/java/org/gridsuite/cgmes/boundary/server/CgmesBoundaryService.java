@@ -89,7 +89,7 @@ class CgmesBoundaryService {
 
     List<String> getBoundariesIdsList() {
         List<BoundaryEntity> boundaries = boundaryRepository.findAll();
-        return boundaries.stream().map(b -> b.getId()).collect(Collectors.toList());
+        return boundaries.stream().map(BoundaryEntity::getId).collect(Collectors.toList());
     }
 
     Boolean boundaryExists(String boundaryId) {
