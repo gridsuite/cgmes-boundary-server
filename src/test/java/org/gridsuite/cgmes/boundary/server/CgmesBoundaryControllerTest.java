@@ -25,8 +25,6 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.ResourceUtils;
 
-import javax.inject.Inject;
-
 import java.io.FileInputStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
@@ -52,10 +50,10 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
     @Autowired
     private MockMvc mvc;
 
-    @Inject
+    @Autowired
     BoundaryRepository boundaryRepository;
 
-    @Inject
+    @Autowired
     private CgmesBoundaryService cgmesBoundaryService;
 
     @Before
