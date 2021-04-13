@@ -8,6 +8,7 @@ package org.gridsuite.cgmes.boundary.server;
 
 import org.apache.commons.io.IOUtils;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryRepository;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -197,5 +198,69 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andExpect(jsonPath("[1].filename").value("20201106T0930Z__ENTSOE_TPBD_001.xml"))
                 .andExpect(jsonPath("[1].scenarioTime").value("2020-11-29T00:00:04"))
                 .andReturn();
+    }
+
+    @Test
+    public void testTsosList() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "tsos.txt",
+            "text/plain", new FileInputStream(ResourceUtils.getFile("classpath:tsos.txt")));
+
+        MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/tsos");
+        builderOk.with(request -> {
+            request.setMethod("POST");
+            return request;
+        });
+
+        // import tsos list
+        mvc.perform(builderOk
+            .file(file))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // get tsos list
+        MvcResult result = mvc.perform(get("/v1/tsos")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+        JSONArray obj = new JSONArray(result.getResponse().getContentAsString());
+        String actual = obj.join("\n").replaceAll("\"", "");
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:tsos.txt")), writer, Charset.forName("UTF-8"));
+        String expected = writer.toString();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testBusinessProcessesList() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "business_processes.txt",
+            "text/plain", new FileInputStream(ResourceUtils.getFile("classpath:business_processes.txt")));
+
+        MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/business-processes");
+        builderOk.with(request -> {
+            request.setMethod("POST");
+            return request;
+        });
+
+        // import business processes list
+        mvc.perform(builderOk
+            .file(file))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // get business processes list
+        MvcResult result = mvc.perform(get("/v1/business-processes")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+        JSONArray obj = new JSONArray(result.getResponse().getContentAsString());
+        String actual = obj.join("\n").replaceAll("\"", "");
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:business_processes.txt")), writer, Charset.forName("UTF-8"));
+        String expected = writer.toString();
+        assertEquals(expected, actual);
     }
 }

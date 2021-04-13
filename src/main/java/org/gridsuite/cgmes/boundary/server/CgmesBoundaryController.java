@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -88,5 +89,41 @@ public class CgmesBoundaryController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "If the boundary exists or not.")})
     public ResponseEntity<Boolean> boundaryExists(@PathVariable("boundaryId") String boundaryId) {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cgmesBoundaryService.boundaryExists(boundaryId));
+    }
+
+    @GetMapping(value = "/tsos", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get list of all available tsos", response = String.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all available tsos")})
+    public ResponseEntity<Set<String>> getTsos() {
+        Optional<Set<String>> tsos = cgmesBoundaryService.getTsos();
+        if (!tsos.isPresent()) {
+            throw new PowsyblException("No available list of tsos");
+        }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(tsos.get());
+    }
+
+    @PostMapping(value = "/tsos")
+    @ApiOperation(value = "import a list of all available tsos in the database")
+    public ResponseEntity<Void> importTsos(@RequestParam("file") MultipartFile tsosFile) {
+        cgmesBoundaryService.importTsos(tsosFile);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/business-processes", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get list of all available business processes", response = String.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all available business processes")})
+    public ResponseEntity<Set<String>> getBusinessProcesses() {
+        Optional<Set<String>> businessProcesses = cgmesBoundaryService.getBusinessProcesses();
+        if (!businessProcesses.isPresent()) {
+            throw new PowsyblException("No available list of business processes");
+        }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(businessProcesses.get());
+    }
+
+    @PostMapping(value = "/business-processes")
+    @ApiOperation(value = "import a list of all available business processes in the database")
+    public ResponseEntity<Void> importBusinessProcesses(@RequestParam("file") MultipartFile businessProcessesFile) {
+        cgmesBoundaryService.importBusinessProcesses(businessProcessesFile);
+        return ResponseEntity.ok().build();
     }
 }

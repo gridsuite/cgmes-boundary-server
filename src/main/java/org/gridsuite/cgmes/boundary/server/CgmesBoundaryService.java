@@ -11,6 +11,10 @@ import com.powsybl.commons.PowsyblException;
 import org.gridsuite.cgmes.boundary.server.dto.BoundaryInfo;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryEntity;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryRepository;
+import org.gridsuite.cgmes.boundary.server.repositories.BusinessProcessesListEntity;
+import org.gridsuite.cgmes.boundary.server.repositories.BusinessProcessesRepository;
+import org.gridsuite.cgmes.boundary.server.repositories.TsosListEntity;
+import org.gridsuite.cgmes.boundary.server.repositories.TsosRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -35,9 +41,18 @@ class CgmesBoundaryService {
     private static final String REGEX = "^(.*(__ENTSOE_%sBD_).*(.xml))$";
 
     private BoundaryRepository boundaryRepository;
+    private TsosRepository tsosRepository;
+    private BusinessProcessesRepository businessProcessesRepository;
 
-    public CgmesBoundaryService(BoundaryRepository boundaryRepository) {
+    private static final String TSOS_LIST_NAME = "tsos";
+    private static final String BUSINESS_PROCESS_LIST_NAME = "businessProcesses";
+
+    public CgmesBoundaryService(BoundaryRepository boundaryRepository,
+                                TsosRepository tsosRepository,
+                                BusinessProcessesRepository businessProcessesRepository) {
         this.boundaryRepository = boundaryRepository;
+        this.tsosRepository = tsosRepository;
+        this.businessProcessesRepository = businessProcessesRepository;
     }
 
     Optional<BoundaryInfo> getBoundary(String boundaryId) {
@@ -94,5 +109,43 @@ class CgmesBoundaryService {
 
     Boolean boundaryExists(String boundaryId) {
         return boundaryRepository.findById(boundaryId).isPresent();
+    }
+
+    Optional<Set<String>> getTsos() {
+        Optional<TsosListEntity> tsosList = tsosRepository.findById(TSOS_LIST_NAME);
+        return tsosList.map(t -> {
+            Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+            res.addAll(new String(t.getTsos().array(), StandardCharsets.UTF_8).lines().map(s -> s.trim()).collect(Collectors.toSet()));
+            return res;
+        });
+    }
+
+    Optional<Set<String>> getBusinessProcesses() {
+        Optional<BusinessProcessesListEntity> businessProcessesList = businessProcessesRepository.findById(BUSINESS_PROCESS_LIST_NAME);
+        return businessProcessesList.map(t -> {
+            Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+            res.addAll(new String(t.getBusinessProcesses().array(), StandardCharsets.UTF_8).lines().map(s -> s.trim()).collect(Collectors.toSet()));
+            return res;
+        });
+    }
+
+    void importTsos(MultipartFile tsosFile) {
+        try {
+            ByteBuffer buf = ByteBuffer.wrap(tsosFile.getBytes());
+            TsosListEntity entity = new TsosListEntity(TSOS_LIST_NAME, buf);
+            tsosRepository.insert(entity);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    void importBusinessProcesses(MultipartFile businessProcessesFile) {
+        try {
+            ByteBuffer buf = ByteBuffer.wrap(businessProcessesFile.getBytes());
+            BusinessProcessesListEntity entity = new BusinessProcessesListEntity(BUSINESS_PROCESS_LIST_NAME, buf);
+            businessProcessesRepository.insert(entity);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }
