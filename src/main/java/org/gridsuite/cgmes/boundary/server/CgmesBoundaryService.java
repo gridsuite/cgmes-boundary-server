@@ -115,7 +115,7 @@ class CgmesBoundaryService {
         Optional<TsosListEntity> tsosList = tsosRepository.findById(TSOS_LIST_NAME);
         return tsosList.map(t -> {
             Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            res.addAll(new String(t.getTsos().array(), StandardCharsets.UTF_8).lines().map(s -> s.trim()).collect(Collectors.toSet()));
+            res.addAll(new String(t.getTsos().array(), StandardCharsets.UTF_8).lines().map(String::trim).collect(Collectors.toSet()));
             return res;
         });
     }
@@ -124,7 +124,7 @@ class CgmesBoundaryService {
         Optional<BusinessProcessesListEntity> businessProcessesList = businessProcessesRepository.findById(BUSINESS_PROCESS_LIST_NAME);
         return businessProcessesList.map(t -> {
             Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            res.addAll(new String(t.getBusinessProcesses().array(), StandardCharsets.UTF_8).lines().map(s -> s.trim()).collect(Collectors.toSet()));
+            res.addAll(new String(t.getBusinessProcesses().array(), StandardCharsets.UTF_8).lines().map(String::trim).collect(Collectors.toSet()));
             return res;
         });
     }
