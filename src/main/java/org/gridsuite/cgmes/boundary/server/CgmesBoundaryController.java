@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.gridsuite.cgmes.boundary.server.dto.BoundaryInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class CgmesBoundaryController {
     private static final List<String> BOUNDARY_PROFILES = List.of("EQ", "TP");
 
-    @Inject
+    @Autowired
     private CgmesBoundaryService cgmesBoundaryService;
 
     @GetMapping(value = "/boundaries", produces = MediaType.APPLICATION_JSON_VALUE)
