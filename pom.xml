@@ -47,6 +47,7 @@
         <java.version>11</java.version>
 
         <gridsuite-dependencies.version>5</gridsuite-dependencies.version>
+        <org.json.version>20200518</org.json.version>
     </properties>
 
     <build>
@@ -97,6 +98,11 @@
             </dependency>
 
             <!-- project specific dependencies -->
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${org.json.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -129,6 +135,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-cassandra</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
         </dependency>
 
         <!-- Runtime dependencies -->

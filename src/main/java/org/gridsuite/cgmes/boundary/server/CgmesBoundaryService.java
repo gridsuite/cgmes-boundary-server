@@ -15,6 +15,7 @@ import org.gridsuite.cgmes.boundary.server.repositories.BusinessProcessesListEnt
 import org.gridsuite.cgmes.boundary.server.repositories.BusinessProcessesRepository;
 import org.gridsuite.cgmes.boundary.server.repositories.TsosListEntity;
 import org.gridsuite.cgmes.boundary.server.repositories.TsosRepository;
+import org.json.JSONArray;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -115,7 +116,10 @@ class CgmesBoundaryService {
         Optional<TsosListEntity> tsosList = tsosRepository.findById(TSOS_LIST_NAME);
         return tsosList.map(t -> {
             Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            res.addAll(new String(t.getTsos().array(), StandardCharsets.UTF_8).lines().map(String::trim).collect(Collectors.toSet()));
+            JSONArray array = new JSONArray(new String(t.getTsos().array(), StandardCharsets.UTF_8));
+            for (int i = 0; i < array.length(); ++i) {
+                res.add(array.getString(i));
+            }
             return res;
         });
     }
@@ -124,7 +128,10 @@ class CgmesBoundaryService {
         Optional<BusinessProcessesListEntity> businessProcessesList = businessProcessesRepository.findById(BUSINESS_PROCESS_LIST_NAME);
         return businessProcessesList.map(t -> {
             Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            res.addAll(new String(t.getBusinessProcesses().array(), StandardCharsets.UTF_8).lines().map(String::trim).collect(Collectors.toSet()));
+            JSONArray array = new JSONArray(new String(t.getBusinessProcesses().array(), StandardCharsets.UTF_8));
+            for (int i = 0; i < array.length(); ++i) {
+                res.add(array.getString(i));
+            }
             return res;
         });
     }

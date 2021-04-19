@@ -8,7 +8,6 @@ package org.gridsuite.cgmes.boundary.server;
 
 import org.apache.commons.io.IOUtils;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryRepository;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -200,8 +199,8 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
 
     @Test
     public void testTsosList() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("file", "tsos.txt",
-            "text/plain", new FileInputStream(ResourceUtils.getFile("classpath:tsos.txt")));
+        MockMultipartFile file = new MockMultipartFile("file", "tsos.json",
+            "application/json", new FileInputStream(ResourceUtils.getFile("classpath:tsos.json")));
 
         MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/tsos");
         builderOk.with(request -> {
@@ -221,19 +220,17 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
             .andReturn();
-        JSONArray obj = new JSONArray(result.getResponse().getContentAsString());
-        String actual = obj.join("\n").replaceAll("\"", "");
 
         StringWriter writer = new StringWriter();
-        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:tsos.txt")), writer, Charset.forName("UTF-8"));
+        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:tsos.json")), writer, Charset.forName("UTF-8"));
         String expected = writer.toString();
-        assertEquals(expected, actual);
+        assertEquals(expected, result.getResponse().getContentAsString());
     }
 
     @Test
     public void testBusinessProcessesList() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("file", "business_processes.txt",
-            "text/plain", new FileInputStream(ResourceUtils.getFile("classpath:business_processes.txt")));
+        MockMultipartFile file = new MockMultipartFile("file", "business_processes.json",
+            "application/json", new FileInputStream(ResourceUtils.getFile("classpath:business_processes.json")));
 
         MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/business-processes");
         builderOk.with(request -> {
@@ -253,12 +250,10 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
             .andReturn();
-        JSONArray obj = new JSONArray(result.getResponse().getContentAsString());
-        String actual = obj.join("\n").replaceAll("\"", "");
 
         StringWriter writer = new StringWriter();
-        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:business_processes.txt")), writer, Charset.forName("UTF-8"));
+        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:business_processes.json")), writer, Charset.forName("UTF-8"));
         String expected = writer.toString();
-        assertEquals(expected, actual);
+        assertEquals(expected, result.getResponse().getContentAsString());
     }
 }
