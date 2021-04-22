@@ -196,4 +196,64 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andExpect(jsonPath("[1].scenarioTime").value("2020-11-29T00:00:04"))
                 .andReturn();
     }
+
+    @Test
+    public void testTsosList() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "tsos.json",
+            "application/json", new FileInputStream(ResourceUtils.getFile("classpath:tsos.json")));
+
+        MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/tsos");
+        builderOk.with(request -> {
+            request.setMethod("POST");
+            return request;
+        });
+
+        // import tsos list
+        mvc.perform(builderOk
+            .file(file))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // get tsos list
+        MvcResult result = mvc.perform(get("/v1/tsos")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:tsos.json")), writer, Charset.forName("UTF-8"));
+        String expected = writer.toString();
+        assertEquals(expected, result.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testBusinessProcessesList() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "business_processes.json",
+            "application/json", new FileInputStream(ResourceUtils.getFile("classpath:business_processes.json")));
+
+        MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/business-processes");
+        builderOk.with(request -> {
+            request.setMethod("POST");
+            return request;
+        });
+
+        // import business processes list
+        mvc.perform(builderOk
+            .file(file))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // get business processes list
+        MvcResult result = mvc.perform(get("/v1/business-processes")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:business_processes.json")), writer, Charset.forName("UTF-8"));
+        String expected = writer.toString();
+        assertEquals(expected, result.getResponse().getContentAsString());
+    }
 }
