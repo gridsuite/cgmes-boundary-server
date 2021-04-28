@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +48,14 @@ public class CgmesBoundaryController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all boundaries")})
     public ResponseEntity<List<BoundaryInfo>> getBoundariesList() {
         List<BoundaryInfo> boundaries = cgmesBoundaryService.getBoundariesList();
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
+    }
+
+    @GetMapping(value = "/boundaries/ids", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get all boundaries ids", response = List.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all boundaries ids")})
+    public ResponseEntity<List<String>> getBoundariesIdsList() {
+        List<String> boundaries = cgmesBoundaryService.getBoundariesIdsList();
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
@@ -73,5 +83,42 @@ public class CgmesBoundaryController {
     public ResponseEntity<String> importBoundary(@RequestParam("file") MultipartFile boundaryFile) {
         String id = cgmesBoundaryService.importBoundary(boundaryFile);
         return ResponseEntity.ok().body(id);
+    }
+
+    @GetMapping(value = "/boundaries/{boundaryId}/exists")
+    @ApiOperation(value = "Check if the boundary exists", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "If the boundary exists or not.")})
+    public ResponseEntity<Boolean> boundaryExists(@PathVariable("boundaryId") String boundaryId) {
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cgmesBoundaryService.boundaryExists(boundaryId));
+    }
+
+    @GetMapping(value = "/tsos", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get list of all available tsos", response = String.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all available tsos")})
+    public ResponseEntity<Set<String>> getTsos() {
+        Optional<Set<String>> tsos = cgmesBoundaryService.getTsos();
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(tsos.orElse(Collections.emptySet()));
+    }
+
+    @PostMapping(value = "/tsos")
+    @ApiOperation(value = "import a list of all available tsos in the database")
+    public ResponseEntity<Void> importTsos(@RequestParam("file") MultipartFile tsosFile) {
+        cgmesBoundaryService.importTsos(tsosFile);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/business-processes", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get list of all available business processes", response = String.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all available business processes")})
+    public ResponseEntity<Set<String>> getBusinessProcesses() {
+        Optional<Set<String>> businessProcesses = cgmesBoundaryService.getBusinessProcesses();
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(businessProcesses.orElse(Collections.emptySet()));
+    }
+
+    @PostMapping(value = "/business-processes")
+    @ApiOperation(value = "import a list of all available business processes in the database")
+    public ResponseEntity<Void> importBusinessProcesses(@RequestParam("file") MultipartFile businessProcessesFile) {
+        cgmesBoundaryService.importBusinessProcesses(businessProcessesFile);
+        return ResponseEntity.ok().build();
     }
 }

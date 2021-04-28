@@ -30,6 +30,7 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -115,6 +116,13 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andReturn();
         assertEquals("urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358", result.getResponse().getContentAsString());
 
+        // get list of boundary ids
+        mvc.perform(get("/v1/boundaries/ids")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andExpect(content().json("[\"urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71\",\"urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358\"]"));
+
         // get list of boundary set
         mvc.perform(get("/v1/boundaries")
                 .contentType(APPLICATION_JSON))
@@ -124,6 +132,22 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andExpect(jsonPath("[1].id").value("urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358"))
                 .andExpect(jsonPath("[0].filename").value("20191106T0930Z__ENTSOE_EQBD_001.xml"))
                 .andExpect(jsonPath("[1].filename").value("20191106T0930Z__ENTSOE_TPBD_001.xml"));
+
+        // check existence of boundary set
+        result = mvc.perform(get("/v1/boundaries/urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71/exists")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+        assertTrue(Boolean.parseBoolean(result.getResponse().getContentAsString()));
+
+        // check non existence of boundary set
+        result = mvc.perform(get("/v1/boundaries/urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f72/exists")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+        assertFalse(Boolean.parseBoolean(result.getResponse().getContentAsString()));
 
         // get one existing boundary set
         result = mvc.perform(get("/v1/boundaries/urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71")
@@ -171,5 +195,65 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andExpect(jsonPath("[1].filename").value("20201106T0930Z__ENTSOE_TPBD_001.xml"))
                 .andExpect(jsonPath("[1].scenarioTime").value("2020-11-29T00:00:04"))
                 .andReturn();
+    }
+
+    @Test
+    public void testTsosList() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "tsos.json",
+            "application/json", new FileInputStream(ResourceUtils.getFile("classpath:tsos.json")));
+
+        MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/tsos");
+        builderOk.with(request -> {
+            request.setMethod("POST");
+            return request;
+        });
+
+        // import tsos list
+        mvc.perform(builderOk
+            .file(file))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // get tsos list
+        MvcResult result = mvc.perform(get("/v1/tsos")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:tsos.json")), writer, Charset.forName("UTF-8"));
+        String expected = writer.toString();
+        assertEquals(expected, result.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testBusinessProcessesList() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "business_processes.json",
+            "application/json", new FileInputStream(ResourceUtils.getFile("classpath:business_processes.json")));
+
+        MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/business-processes");
+        builderOk.with(request -> {
+            request.setMethod("POST");
+            return request;
+        });
+
+        // import business processes list
+        mvc.perform(builderOk
+            .file(file))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // get business processes list
+        MvcResult result = mvc.perform(get("/v1/business-processes")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(new FileInputStream(ResourceUtils.getFile("classpath:business_processes.json")), writer, Charset.forName("UTF-8"));
+        String expected = writer.toString();
+        assertEquals(expected, result.getResponse().getContentAsString());
     }
 }
