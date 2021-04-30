@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
@@ -34,6 +35,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -195,6 +197,23 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andExpect(jsonPath("[1].filename").value("20201106T0930Z__ENTSOE_TPBD_001.xml"))
                 .andExpect(jsonPath("[1].scenarioTime").value("2020-11-29T00:00:04"))
                 .andReturn();
+
+        // delete non existing boundary
+        result = mvc.perform(delete("/v1/boundaries/urn:uuid:11111111-aab9-4284-a965-71d5cd151f71"))
+            .andReturn();
+        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+
+        // delete existing boundary
+        mvc.perform(delete("/v1/boundaries/urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        result = mvc.perform(get("/v1/boundaries/urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71/exists")
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
+            .andReturn();
+        assertFalse(Boolean.parseBoolean(result.getResponse().getContentAsString()));
     }
 
     @Test

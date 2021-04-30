@@ -16,8 +16,10 @@ import org.gridsuite.cgmes.boundary.server.repositories.BusinessProcessesReposit
 import org.gridsuite.cgmes.boundary.server.repositories.TsosListEntity;
 import org.gridsuite.cgmes.boundary.server.repositories.TsosRepository;
 import org.json.JSONArray;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -153,6 +155,14 @@ class CgmesBoundaryService {
             businessProcessesRepository.insert(entity);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    void deleteBoundary(String boundaryId) {
+        if (boundaryRepository.existsById(boundaryId)) {
+            boundaryRepository.deleteById(boundaryId);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 }

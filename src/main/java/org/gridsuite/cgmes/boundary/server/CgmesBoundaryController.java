@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -119,6 +120,14 @@ public class CgmesBoundaryController {
     @ApiOperation(value = "import a list of all available business processes in the database")
     public ResponseEntity<Void> importBusinessProcesses(@RequestParam("file") MultipartFile businessProcessesFile) {
         cgmesBoundaryService.importBusinessProcesses(businessProcessesFile);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(value = "/boundaries/{boundaryId}")
+    @ApiOperation(value = "Delete a boundary")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The boundary identified by boundaryId has been deleted")})
+    public ResponseEntity<Void> deleteBoundary(@PathVariable("boundaryId") String boundaryId) {
+        cgmesBoundaryService.deleteBoundary(boundaryId);
         return ResponseEntity.ok().build();
     }
 }
