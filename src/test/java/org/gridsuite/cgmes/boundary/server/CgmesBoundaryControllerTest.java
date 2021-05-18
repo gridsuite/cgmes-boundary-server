@@ -118,12 +118,12 @@ public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup 
                 .andReturn();
         assertEquals("urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358", result.getResponse().getContentAsString());
 
-        // get list of boundary ids
-        mvc.perform(get("/v1/boundaries/ids")
+        // get list of boundary infos
+        mvc.perform(get("/v1/boundaries/infos")
             .contentType(APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
-            .andExpect(content().json("[\"urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71\",\"urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358\"]"));
+            .andExpect(content().json("[{\"id\":\"urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71\",\"filename\":\"20191106T0930Z__ENTSOE_EQBD_001.xml\",\"scenarioTime\":\"2020-06-29T00:00:00\"},{\"id\":\"urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358\",\"filename\":\"20191106T0930Z__ENTSOE_TPBD_001.xml\",\"scenarioTime\":\"2020-06-29T00:00:00\"}]"));
 
         // get list of boundary set
         mvc.perform(get("/v1/boundaries")
