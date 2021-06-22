@@ -36,7 +36,7 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
         CqlSessionFactoryBean session = new CqlSessionFactoryBean();
         session.setContactPoints(env.getRequiredProperty("cassandra.contact-points"));
         session.setPort(Integer.parseInt(env.getRequiredProperty("cassandra.port")));
-        session.setLocalDatacenter("datacenter1");
+        session.setLocalDatacenter(env.getRequiredProperty("cassandra.datacenter"));
         session.setKeyspaceName(getKeyspaceName());
         return session;
     }
