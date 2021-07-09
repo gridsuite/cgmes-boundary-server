@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.gridsuite.cgmes.boundary.server.dto.BoundaryContent;
 import org.gridsuite.cgmes.boundary.server.dto.BoundaryInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,32 +48,32 @@ public class CgmesBoundaryController {
     @GetMapping(value = "/boundaries", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get all boundaries", response = List.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all boundaries")})
-    public ResponseEntity<List<BoundaryInfo>> getBoundariesList() {
-        List<BoundaryInfo> boundaries = cgmesBoundaryService.getBoundariesList();
+    public ResponseEntity<List<BoundaryContent>> getBoundariesList() {
+        List<BoundaryContent> boundaries = cgmesBoundaryService.getBoundariesList();
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
-    @GetMapping(value = "/boundaries/ids", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Get all boundaries ids", response = List.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all boundaries ids")})
-    public ResponseEntity<List<String>> getBoundariesIdsList() {
-        List<String> boundaries = cgmesBoundaryService.getBoundariesIdsList();
+    @GetMapping(value = "/boundaries/infos", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get all boundaries infos", response = List.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all boundaries infos")})
+    public ResponseEntity<List<BoundaryInfo>> getBoundariesInfosList() {
+        List<BoundaryInfo> boundaries = cgmesBoundaryService.getBoundariesInfosList();
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
     @GetMapping(value = "/boundaries/last", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get last boundary", response = List.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "The last EQ and TP boundaries")})
-    public ResponseEntity<List<BoundaryInfo>> getLastBoundaries() {
-        List<BoundaryInfo> boundaries = BOUNDARY_PROFILES.stream().map(profile -> cgmesBoundaryService.getLastBoundary(profile)).collect(Collectors.toList());
+    public ResponseEntity<List<BoundaryContent>> getLastBoundaries() {
+        List<BoundaryContent> boundaries = BOUNDARY_PROFILES.stream().map(profile -> cgmesBoundaryService.getLastBoundary(profile)).collect(Collectors.toList());
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
     @GetMapping(value = "/boundaries/{boundaryId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get a boundary", response = String.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "The boundary identified by boundaryId")})
-    public ResponseEntity<BoundaryInfo> getBoundary(@PathVariable("boundaryId") String boundaryId) {
-        Optional<BoundaryInfo> boundary = cgmesBoundaryService.getBoundary(boundaryId);
+    public ResponseEntity<BoundaryContent> getBoundary(@PathVariable("boundaryId") String boundaryId) {
+        Optional<BoundaryContent> boundary = cgmesBoundaryService.getBoundary(boundaryId);
         if (!boundary.isPresent()) {
             throw new PowsyblException("Boundary not found for id " + boundaryId);
         }

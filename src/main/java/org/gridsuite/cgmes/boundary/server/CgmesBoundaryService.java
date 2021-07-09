@@ -8,6 +8,7 @@ package org.gridsuite.cgmes.boundary.server;
 
 import com.powsybl.cgmes.model.FullModel;
 import com.powsybl.commons.PowsyblException;
+import org.gridsuite.cgmes.boundary.server.dto.BoundaryContent;
 import org.gridsuite.cgmes.boundary.server.dto.BoundaryInfo;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryEntity;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryRepository;
@@ -58,20 +59,20 @@ class CgmesBoundaryService {
         this.businessProcessesRepository = businessProcessesRepository;
     }
 
-    Optional<BoundaryInfo> getBoundary(String boundaryId) {
+    Optional<BoundaryContent> getBoundary(String boundaryId) {
         Optional<BoundaryEntity> boundary = boundaryRepository.findById(boundaryId);
-        return boundary.map(b -> new BoundaryInfo(b.getId(), b.getFilename(), b.getScenarioTime(), new String(b.getBoundary().array(), StandardCharsets.UTF_8)));
+        return boundary.map(b -> new BoundaryContent(b.getId(), b.getFilename(), b.getScenarioTime(), new String(b.getBoundary().array(), StandardCharsets.UTF_8)));
     }
 
-    BoundaryInfo getLastBoundary(String profile) {
-        List<BoundaryInfo> boundaries = getBoundariesList();
+    BoundaryContent getLastBoundary(String profile) {
+        List<BoundaryContent> boundaries = getBoundariesList();
         final String regex = String.format(REGEX, profile);
-        Optional<BoundaryInfo> firstBoundary = boundaries.stream().filter(boundaryInfo -> boundaryInfo.getFilename().matches(regex)).findFirst();
+        Optional<BoundaryContent> firstBoundary = boundaries.stream().filter(boundaryInfo -> boundaryInfo.getFilename().matches(regex)).findFirst();
         if (firstBoundary.isEmpty()) {
             throw new PowsyblException("Boundary not found for profile " + profile);
         }
-        BoundaryInfo mostRecentBoundary = firstBoundary.get();
-        for (BoundaryInfo boundary : boundaries) {
+        BoundaryContent mostRecentBoundary = firstBoundary.get();
+        for (BoundaryContent boundary : boundaries) {
             if (boundary.getFilename().matches(regex) && boundary.getScenarioTime().isAfter(mostRecentBoundary.getScenarioTime())) {
                 mostRecentBoundary = boundary;
             }
@@ -97,17 +98,17 @@ class CgmesBoundaryService {
         return id;
     }
 
-    List<BoundaryInfo> getBoundariesList() {
+    List<BoundaryContent> getBoundariesList() {
         List<BoundaryEntity> boundaries = boundaryRepository.findAll();
         return boundaries.stream().map(b -> {
             String boundaryXml = new String(b.getBoundary().array(), StandardCharsets.UTF_8);
-            return new BoundaryInfo(b.getId(), b.getFilename(), b.getScenarioTime(), boundaryXml);
+            return new BoundaryContent(b.getId(), b.getFilename(), b.getScenarioTime(), boundaryXml);
         }).collect(Collectors.toList());
     }
 
-    List<String> getBoundariesIdsList() {
+    List<BoundaryInfo> getBoundariesInfosList() {
         List<BoundaryEntity> boundaries = boundaryRepository.findAll();
-        return boundaries.stream().map(BoundaryEntity::getId).collect(Collectors.toList());
+        return boundaries.stream().map(b -> new BoundaryInfo(b.getId(), b.getFilename(), b.getScenarioTime())).collect(Collectors.toList());
     }
 
     Boolean boundaryExists(String boundaryId) {
