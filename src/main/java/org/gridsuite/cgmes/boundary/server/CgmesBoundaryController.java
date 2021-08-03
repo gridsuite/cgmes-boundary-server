@@ -7,10 +7,10 @@
 package org.gridsuite.cgmes.boundary.server;
 
 import com.powsybl.commons.PowsyblException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.gridsuite.cgmes.boundary.server.dto.BoundaryContent;
 import org.gridsuite.cgmes.boundary.server.dto.BoundaryInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping(value = "/" + CgmesBoundaryApi.API_VERSION + "/")
-@Api(tags = "cgmes-boundary-server")
+@Tag(name = "cgmes-boundary-server")
 @ComponentScan(basePackageClasses = CgmesBoundaryService.class)
 public class CgmesBoundaryController {
     private static final List<String> BOUNDARY_PROFILES = List.of("EQ", "TP");
@@ -46,32 +46,32 @@ public class CgmesBoundaryController {
     private CgmesBoundaryService cgmesBoundaryService;
 
     @GetMapping(value = "/boundaries", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Get all boundaries", response = List.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all boundaries")})
+    @Operation(summary = "Get all boundaries")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The list of all boundaries")})
     public ResponseEntity<List<BoundaryContent>> getBoundariesList() {
         List<BoundaryContent> boundaries = cgmesBoundaryService.getBoundariesList();
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
     @GetMapping(value = "/boundaries/infos", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Get all boundaries infos", response = List.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all boundaries infos")})
+    @Operation(summary = "Get all boundaries infos")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The list of all boundaries infos")})
     public ResponseEntity<List<BoundaryInfo>> getBoundariesInfosList() {
         List<BoundaryInfo> boundaries = cgmesBoundaryService.getBoundariesInfosList();
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
     @GetMapping(value = "/boundaries/last", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Get last boundary", response = List.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "The last EQ and TP boundaries")})
+    @Operation(summary = "Get last boundary")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The last EQ and TP boundaries")})
     public ResponseEntity<List<BoundaryContent>> getLastBoundaries() {
         List<BoundaryContent> boundaries = BOUNDARY_PROFILES.stream().map(profile -> cgmesBoundaryService.getLastBoundary(profile)).collect(Collectors.toList());
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundaries);
     }
 
     @GetMapping(value = "/boundaries/{boundaryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Get a boundary", response = String.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "The boundary identified by boundaryId")})
+    @Operation(summary = "Get a boundary")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The boundary identified by boundaryId")})
     public ResponseEntity<BoundaryContent> getBoundary(@PathVariable("boundaryId") String boundaryId) {
         Optional<BoundaryContent> boundary = cgmesBoundaryService.getBoundary(boundaryId);
         if (!boundary.isPresent()) {
@@ -81,52 +81,52 @@ public class CgmesBoundaryController {
     }
 
     @PostMapping(value = "/boundaries")
-    @ApiOperation(value = "import a boundary file in the database")
+    @Operation(summary = "import a boundary file in the database")
     public ResponseEntity<String> importBoundary(@RequestParam("file") MultipartFile boundaryFile) {
         String id = cgmesBoundaryService.importBoundary(boundaryFile);
         return ResponseEntity.ok().body(id);
     }
 
     @GetMapping(value = "/boundaries/{boundaryId}/exists")
-    @ApiOperation(value = "Check if the boundary exists", produces = "application/json")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "If the boundary exists or not.")})
+    @Operation(summary = "Check if the boundary exists")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "If the boundary exists or not.")})
     public ResponseEntity<Boolean> boundaryExists(@PathVariable("boundaryId") String boundaryId) {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(cgmesBoundaryService.boundaryExists(boundaryId));
     }
 
     @GetMapping(value = "/tsos", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Get list of all available tsos", response = String.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all available tsos")})
+    @Operation(summary = "Get list of all available tsos")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The list of all available tsos")})
     public ResponseEntity<Set<String>> getTsos() {
         Optional<Set<String>> tsos = cgmesBoundaryService.getTsos();
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(tsos.orElse(Collections.emptySet()));
     }
 
     @PostMapping(value = "/tsos")
-    @ApiOperation(value = "import a list of all available tsos in the database")
+    @Operation(summary = "import a list of all available tsos in the database")
     public ResponseEntity<Void> importTsos(@RequestParam("file") MultipartFile tsosFile) {
         cgmesBoundaryService.importTsos(tsosFile);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/business-processes", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Get list of all available business processes", response = String.class)
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "The list of all available business processes")})
+    @Operation(summary = "Get list of all available business processes")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The list of all available business processes")})
     public ResponseEntity<Set<String>> getBusinessProcesses() {
         Optional<Set<String>> businessProcesses = cgmesBoundaryService.getBusinessProcesses();
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(businessProcesses.orElse(Collections.emptySet()));
     }
 
     @PostMapping(value = "/business-processes")
-    @ApiOperation(value = "import a list of all available business processes in the database")
+    @Operation(summary = "import a list of all available business processes in the database")
     public ResponseEntity<Void> importBusinessProcesses(@RequestParam("file") MultipartFile businessProcessesFile) {
         cgmesBoundaryService.importBusinessProcesses(businessProcessesFile);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = "/boundaries/{boundaryId}")
-    @ApiOperation(value = "Delete a boundary")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "The boundary identified by boundaryId has been deleted")})
+    @Operation(summary = "Delete a boundary")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "The boundary identified by boundaryId has been deleted")})
     public ResponseEntity<Void> deleteBoundary(@PathVariable("boundaryId") String boundaryId) {
         cgmesBoundaryService.deleteBoundary(boundaryId);
         return ResponseEntity.ok().build();

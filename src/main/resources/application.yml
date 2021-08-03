@@ -4,3 +4,4 @@ spring:
 
 server:
   port: 5021
+  forward-headers-strategy: framework

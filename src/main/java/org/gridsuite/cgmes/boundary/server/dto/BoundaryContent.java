@@ -6,7 +6,7 @@
  */
 package org.gridsuite.cgmes.boundary.server.dto;
 
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  */
 @NoArgsConstructor
 @Getter
-@ApiModel("Boundary content")
+@Schema(description = "Boundary content")
 public class BoundaryContent extends BoundaryInfo {
 
     private String boundary;
