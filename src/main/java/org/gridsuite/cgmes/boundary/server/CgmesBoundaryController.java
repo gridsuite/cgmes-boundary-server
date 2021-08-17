@@ -80,7 +80,7 @@ public class CgmesBoundaryController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(boundary.get());
     }
 
-    @PostMapping(value = "/boundaries")
+    @PostMapping(value = "/boundaries", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "import a boundary file in the database")
     public ResponseEntity<String> importBoundary(@RequestParam("file") MultipartFile boundaryFile) {
         String id = cgmesBoundaryService.importBoundary(boundaryFile);
@@ -102,7 +102,7 @@ public class CgmesBoundaryController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(tsos.orElse(Collections.emptySet()));
     }
 
-    @PostMapping(value = "/tsos")
+    @PostMapping(value = "/tsos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "import a list of all available tsos in the database")
     public ResponseEntity<Void> importTsos(@RequestParam("file") MultipartFile tsosFile) {
         cgmesBoundaryService.importTsos(tsosFile);
@@ -117,7 +117,7 @@ public class CgmesBoundaryController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(businessProcesses.orElse(Collections.emptySet()));
     }
 
-    @PostMapping(value = "/business-processes")
+    @PostMapping(value = "/business-processes", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "import a list of all available business processes in the database")
     public ResponseEntity<Void> importBusinessProcesses(@RequestParam("file") MultipartFile businessProcessesFile) {
         cgmesBoundaryService.importBusinessProcesses(businessProcessesFile);
