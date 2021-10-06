@@ -1,7 +1,9 @@
 spring:
+  profiles:
+    active: default,local
+
   application:
     name: cgmes-boundary-server
 
 server:
-  port: 5021
   forward-headers-strategy: framework
