@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS cgmes_boundary.boundaries (
+CREATE TABLE IF NOT EXISTS boundaries (
     id text,
     filename text,
     boundary blob,
@@ -6,13 +6,13 @@ CREATE TABLE IF NOT EXISTS cgmes_boundary.boundaries (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS cgmes_boundary.tsos (
+CREATE TABLE IF NOT EXISTS tsos (
     name text,
     tsos blob,
     PRIMARY KEY (name)
 );
 
-CREATE TABLE IF NOT EXISTS cgmes_boundary.business_processes (
+CREATE TABLE IF NOT EXISTS business_processes (
     name text,
     businessProcesses blob,
     PRIMARY KEY (name)

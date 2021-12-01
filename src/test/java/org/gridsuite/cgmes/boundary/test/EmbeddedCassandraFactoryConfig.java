@@ -41,7 +41,7 @@ public class EmbeddedCassandraFactoryConfig {
     @Bean
     CassandraConnection cassandraConnection(Cassandra cassandra) {
         CassandraConnection cassandraConnection = new DefaultCassandraConnectionFactory().create(cassandra);
-        CqlDataSet.ofClasspaths("create_keyspace.cql", "cgmes_boundary.cql").forEachStatement(cassandraConnection::execute);
+        CqlDataSet.ofClasspaths("create_keyspace.cql").add(CqlDataSet.ofStrings("USE cgmes_boundary;")).add(CqlDataSet.ofClasspaths("cgmes_boundary.cql")).forEachStatement(cassandraConnection::execute);
         return cassandraConnection;
     }
 
