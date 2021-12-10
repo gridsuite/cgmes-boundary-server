@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.CqlSessionFactoryBean;
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com>
@@ -24,11 +25,12 @@ import org.springframework.data.cassandra.repository.config.EnableCassandraRepos
 @EnableCassandraRepositories(basePackageClasses = BoundaryRepository.class)
 public class CassandraConfig extends AbstractCassandraConfiguration {
 
-    static final String KEYSPACE_CGMES_BOUNDARY = "cgmes_boundary";
+    @Value("${powsybl-ws.cassandra.keyspace.prefix:}${cassandra-keyspace:cgmes_boundary}")
+    private String keyspaceName;
 
     @Override
     protected String getKeyspaceName() {
-        return KEYSPACE_CGMES_BOUNDARY;
+        return keyspaceName;
     }
 
     @Bean
