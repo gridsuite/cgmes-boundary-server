@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.10.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+    <changeSet author="harperjon (generated)" id="1647862684832-1">
+        <createTable tableName="boundaries">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="boundariesPK"/>
+            </column>
+            <column name="boundary" type="OID"/>
+            <column name="filename" type="VARCHAR(255)"/>
+            <column name="scenario_time" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="harperjon (generated)" id="1647862684832-2">
+        <createTable tableName="business_processes">
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="business_processesPK"/>
+            </column>
+            <column name="business_processes" type="OID"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="harperjon (generated)" id="1647862684832-3">
+        <createTable tableName="tsos">
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="tsosPK"/>
+            </column>
+            <column name="tsos" type="OID"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

@@ -6,24 +6,29 @@
  */
 package org.gridsuite.cgmes.boundary.server.repositories;
 
-import lombok.Getter;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 
-import java.nio.ByteBuffer;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com
  */
+@NoArgsConstructor
 @Getter
-@Table("business_processes")
+@Table(name = "business_processes")
+@Entity
 public class BusinessProcessesListEntity {
-    @PrimaryKey
+    @Id
     private String name;
 
-    private ByteBuffer businessProcesses;
+    @Lob
+    private byte[] businessProcesses;
 
-    public BusinessProcessesListEntity(String name, ByteBuffer businessProcesses) {
+    public BusinessProcessesListEntity(String name, byte[] businessProcesses) {
         this.name = name;
         this.businessProcesses = businessProcesses;
     }

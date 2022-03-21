@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -61,7 +60,7 @@ class CgmesBoundaryService {
 
     Optional<BoundaryContent> getBoundary(String boundaryId) {
         Optional<BoundaryEntity> boundary = boundaryRepository.findById(boundaryId);
-        return boundary.map(b -> new BoundaryContent(b.getId(), b.getFilename(), b.getScenarioTime(), new String(b.getBoundary().array(), StandardCharsets.UTF_8)));
+        return boundary.map(b -> new BoundaryContent(b.getId(), b.getFilename(), b.getScenarioTime(), new String(b.getBoundary(), StandardCharsets.UTF_8)));
     }
 
     BoundaryContent getLastBoundary(String profile) {
@@ -86,12 +85,11 @@ class CgmesBoundaryService {
             FullModel fullModel = FullModel.parse(reader);
             id = fullModel.getId();
 
-            ByteBuffer buf = ByteBuffer.wrap(mpfFile.getBytes());
             String filename = mpfFile.getOriginalFilename();
             LocalDateTime scenarioTime = fullModel.getScenarioTime().toLocalDateTime();
 
-            BoundaryEntity entity = new BoundaryEntity(fullModel.getId(), filename, buf, scenarioTime);
-            boundaryRepository.insert(entity);
+            BoundaryEntity entity = new BoundaryEntity(fullModel.getId(), filename, mpfFile.getBytes(), scenarioTime);
+            boundaryRepository.save(entity);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -101,7 +99,7 @@ class CgmesBoundaryService {
     List<BoundaryContent> getBoundariesList() {
         List<BoundaryEntity> boundaries = boundaryRepository.findAll();
         return boundaries.stream().map(b -> {
-            String boundaryXml = new String(b.getBoundary().array(), StandardCharsets.UTF_8);
+            String boundaryXml = new String(b.getBoundary(), StandardCharsets.UTF_8);
             return new BoundaryContent(b.getId(), b.getFilename(), b.getScenarioTime(), boundaryXml);
         }).collect(Collectors.toList());
     }
@@ -119,7 +117,7 @@ class CgmesBoundaryService {
         Optional<TsosListEntity> tsosList = tsosRepository.findById(TSOS_LIST_NAME);
         return tsosList.map(t -> {
             Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            JSONArray array = new JSONArray(new String(t.getTsos().array(), StandardCharsets.UTF_8));
+            JSONArray array = new JSONArray(new String(t.getTsos(), StandardCharsets.UTF_8));
             for (int i = 0; i < array.length(); ++i) {
                 res.add(array.getString(i));
             }
@@ -131,7 +129,7 @@ class CgmesBoundaryService {
         Optional<BusinessProcessesListEntity> businessProcessesList = businessProcessesRepository.findById(BUSINESS_PROCESS_LIST_NAME);
         return businessProcessesList.map(t -> {
             Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            JSONArray array = new JSONArray(new String(t.getBusinessProcesses().array(), StandardCharsets.UTF_8));
+            JSONArray array = new JSONArray(new String(t.getBusinessProcesses(), StandardCharsets.UTF_8));
             for (int i = 0; i < array.length(); ++i) {
                 res.add(array.getString(i));
             }
@@ -141,9 +139,8 @@ class CgmesBoundaryService {
 
     void importTsos(MultipartFile tsosFile) {
         try {
-            ByteBuffer buf = ByteBuffer.wrap(tsosFile.getBytes());
-            TsosListEntity entity = new TsosListEntity(TSOS_LIST_NAME, buf);
-            tsosRepository.insert(entity);
+            TsosListEntity entity = new TsosListEntity(TSOS_LIST_NAME, tsosFile.getBytes());
+            tsosRepository.save(entity);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -151,9 +148,8 @@ class CgmesBoundaryService {
 
     void importBusinessProcesses(MultipartFile businessProcessesFile) {
         try {
-            ByteBuffer buf = ByteBuffer.wrap(businessProcessesFile.getBytes());
-            BusinessProcessesListEntity entity = new BusinessProcessesListEntity(BUSINESS_PROCESS_LIST_NAME, buf);
-            businessProcessesRepository.insert(entity);
+            BusinessProcessesListEntity entity = new BusinessProcessesListEntity(BUSINESS_PROCESS_LIST_NAME, businessProcessesFile.getBytes());
+            businessProcessesRepository.save(entity);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
