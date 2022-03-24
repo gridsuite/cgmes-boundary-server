@@ -14,7 +14,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -46,9 +47,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com>
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(CgmesBoundaryController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 @ContextConfiguration(classes = {CgmesBoundaryApplication.class})
-public class CgmesBoundaryControllerTest extends AbstractEmbeddedCassandraSetup {
+public class CgmesBoundaryControllerTest {
 
     @Autowired
     private MockMvc mvc;

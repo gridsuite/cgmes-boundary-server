@@ -6,12 +6,12 @@
  */
 package org.gridsuite.cgmes.boundary.server.repositories;
 
-import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com
  */
 @Repository
-public interface BoundaryRepository extends CassandraRepository<BoundaryEntity, String> {
+public interface BoundaryRepository extends JpaRepository<BoundaryEntity, String> {
 }

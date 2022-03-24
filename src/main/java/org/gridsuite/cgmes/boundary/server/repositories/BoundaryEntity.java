@@ -7,29 +7,34 @@
 package org.gridsuite.cgmes.boundary.server.repositories;
 
 import lombok.Getter;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
+import lombok.NoArgsConstructor;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 
-import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com
  */
+@NoArgsConstructor
 @Getter
-@Table("boundaries")
+@Table(name = "boundaries")
+@Entity
 public class BoundaryEntity {
 
-    @PrimaryKey
+    @Id
     private String id;
 
     private String filename;
 
-    private ByteBuffer boundary;
+    @Lob
+    private byte[] boundary;
 
     private LocalDateTime scenarioTime;
 
-    public BoundaryEntity(String id, String filename, ByteBuffer boundary, LocalDateTime scenarioTime) {
+    public BoundaryEntity(String id, String filename, byte[] boundary, LocalDateTime scenarioTime) {
         this.id = id;
         this.filename = filename;
         this.boundary = boundary;
