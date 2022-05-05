@@ -46,7 +46,7 @@
     <properties>
         <java.version>11</java.version>
         <commons-lang3.version>3.9</commons-lang3.version>
-        <gridsuite-dependencies.version>16</gridsuite-dependencies.version>
+        <gridsuite-dependencies.version>17</gridsuite-dependencies.version>
         <org.json.version>20200518</org.json.version>
         <liquibase-hibernate-package>org.gridsuite.cgmes.boundary.server</liquibase-hibernate-package>
     </properties>
