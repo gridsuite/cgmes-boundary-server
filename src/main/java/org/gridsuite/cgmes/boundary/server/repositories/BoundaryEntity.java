@@ -8,10 +8,8 @@ package org.gridsuite.cgmes.boundary.server.repositories;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -29,12 +27,12 @@ public class BoundaryEntity {
 
     private String filename;
 
-    @Lob
-    private byte[] boundary;
+    @Column(name = "boundary", columnDefinition = "CLOB")
+    private String boundary;
 
     private LocalDateTime scenarioTime;
 
-    public BoundaryEntity(String id, String filename, byte[] boundary, LocalDateTime scenarioTime) {
+    public BoundaryEntity(String id, String filename, String boundary, LocalDateTime scenarioTime) {
         this.id = id;
         this.filename = filename;
         this.boundary = boundary;
