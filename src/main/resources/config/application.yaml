@@ -2,4 +2,6 @@ spring:
   application:
     name: cgmes-boundary-server
 
-dbName: cgmes_boundary
+powsybl-ws:
+  database:
+    name: cgmes_boundary

@@ -1,2 +1,7 @@
 server:
   port: 5021
+
+powsybl-ws:
+  database:
+    host: localhost
+  
