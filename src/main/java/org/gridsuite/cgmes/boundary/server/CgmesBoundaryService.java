@@ -60,7 +60,7 @@ class CgmesBoundaryService {
 
     Optional<BoundaryContent> getBoundary(String boundaryId) {
         Optional<BoundaryEntity> boundary = boundaryRepository.findById(boundaryId);
-        return boundary.map(b -> new BoundaryContent(b.getId(), b.getFilename(), b.getScenarioTime(), new String(b.getBoundary(), StandardCharsets.UTF_8)));
+        return boundary.map(b -> new BoundaryContent(b.getId(), b.getFilename(), b.getScenarioTime(), b.getBoundary()));
     }
 
     BoundaryContent getLastBoundary(String profile) {
@@ -88,7 +88,7 @@ class CgmesBoundaryService {
             String filename = mpfFile.getOriginalFilename();
             LocalDateTime scenarioTime = fullModel.getScenarioTime().toLocalDateTime();
 
-            BoundaryEntity entity = new BoundaryEntity(fullModel.getId(), filename, mpfFile.getBytes(), scenarioTime);
+            BoundaryEntity entity = new BoundaryEntity(fullModel.getId(), filename, new String(mpfFile.getBytes(), StandardCharsets.UTF_8), scenarioTime);
             boundaryRepository.save(entity);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -98,10 +98,9 @@ class CgmesBoundaryService {
 
     List<BoundaryContent> getBoundariesList() {
         List<BoundaryEntity> boundaries = boundaryRepository.findAll();
-        return boundaries.stream().map(b -> {
-            String boundaryXml = new String(b.getBoundary(), StandardCharsets.UTF_8);
-            return new BoundaryContent(b.getId(), b.getFilename(), b.getScenarioTime(), boundaryXml);
-        }).collect(Collectors.toList());
+        return boundaries.stream().map(b ->
+            new BoundaryContent(b.getId(), b.getFilename(), b.getScenarioTime(), b.getBoundary())
+        ).collect(Collectors.toList());
     }
 
     List<BoundaryInfo> getBoundariesInfosList() {
@@ -117,7 +116,7 @@ class CgmesBoundaryService {
         Optional<TsosListEntity> tsosList = tsosRepository.findById(TSOS_LIST_NAME);
         return tsosList.map(t -> {
             Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            JSONArray array = new JSONArray(new String(t.getTsos(), StandardCharsets.UTF_8));
+            JSONArray array = new JSONArray(t.getTsos());
             for (int i = 0; i < array.length(); ++i) {
                 res.add(array.getString(i));
             }
@@ -129,7 +128,7 @@ class CgmesBoundaryService {
         Optional<BusinessProcessesListEntity> businessProcessesList = businessProcessesRepository.findById(BUSINESS_PROCESS_LIST_NAME);
         return businessProcessesList.map(t -> {
             Set<String> res = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            JSONArray array = new JSONArray(new String(t.getBusinessProcesses(), StandardCharsets.UTF_8));
+            JSONArray array = new JSONArray(t.getBusinessProcesses());
             for (int i = 0; i < array.length(); ++i) {
                 res.add(array.getString(i));
             }
@@ -139,7 +138,7 @@ class CgmesBoundaryService {
 
     void importTsos(MultipartFile tsosFile) {
         try {
-            TsosListEntity entity = new TsosListEntity(TSOS_LIST_NAME, tsosFile.getBytes());
+            TsosListEntity entity = new TsosListEntity(TSOS_LIST_NAME, new String(tsosFile.getBytes(), StandardCharsets.UTF_8));
             tsosRepository.save(entity);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -148,7 +147,7 @@ class CgmesBoundaryService {
 
     void importBusinessProcesses(MultipartFile businessProcessesFile) {
         try {
-            BusinessProcessesListEntity entity = new BusinessProcessesListEntity(BUSINESS_PROCESS_LIST_NAME, businessProcessesFile.getBytes());
+            BusinessProcessesListEntity entity = new BusinessProcessesListEntity(BUSINESS_PROCESS_LIST_NAME, new String(businessProcessesFile.getBytes(), StandardCharsets.UTF_8));
             businessProcessesRepository.save(entity);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

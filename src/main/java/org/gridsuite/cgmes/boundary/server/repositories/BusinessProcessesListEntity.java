@@ -6,10 +6,7 @@
  */
 package org.gridsuite.cgmes.boundary.server.repositories;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.NoArgsConstructor;
 import lombok.Getter;
@@ -25,10 +22,10 @@ public class BusinessProcessesListEntity {
     @Id
     private String name;
 
-    @Lob
-    private byte[] businessProcesses;
+    @Column(name = "businessProcesses", columnDefinition = "CLOB")
+    private String businessProcesses;
 
-    public BusinessProcessesListEntity(String name, byte[] businessProcesses) {
+    public BusinessProcessesListEntity(String name, String businessProcesses) {
         this.name = name;
         this.businessProcesses = businessProcesses;
     }

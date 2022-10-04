@@ -8,10 +8,8 @@ package org.gridsuite.cgmes.boundary.server.repositories;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com
@@ -24,10 +22,10 @@ public class TsosListEntity {
     @Id
     private String name;
 
-    @Lob
-    private byte[] tsos;
+    @Column(name = "tsos", columnDefinition = "CLOB")
+    private String tsos;
 
-    public TsosListEntity(String name, byte[] tsos) {
+    public TsosListEntity(String name, String tsos) {
         this.name = name;
         this.tsos = tsos;
     }
