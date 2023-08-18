@@ -6,7 +6,7 @@
  */
 package org.gridsuite.cgmes.boundary.server.repositories;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.NoArgsConstructor;
 import lombok.Getter;
