@@ -9,9 +9,8 @@ package org.gridsuite.cgmes.boundary.server;
 import org.apache.commons.io.IOUtils;
 import org.gridsuite.cgmes.boundary.server.repositories.BoundaryRepository;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,8 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
@@ -31,26 +28,18 @@ import java.io.FileInputStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Franck Lecuyer <franck.lecuyer at rte-france.com>
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = {CgmesBoundaryApplication.class})
 @AutoConfigureMockMvc
-@ContextConfiguration(classes = {CgmesBoundaryApplication.class})
-public class CgmesBoundaryControllerTest {
+class CgmesBoundaryControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -61,24 +50,24 @@ public class CgmesBoundaryControllerTest {
     @Autowired
     private CgmesBoundaryService cgmesBoundaryService;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         MockMultipartFile file1 = new MockMultipartFile("file", "20191106T0930Z__ENTSOE_EQBD_001.xml",
-                "text/xml", new FileInputStream(ResourceUtils.getFile("classpath:20191106T0930Z__ENTSOE_EQBD_001.xml")));
+                MediaType.TEXT_XML_VALUE, new FileInputStream(ResourceUtils.getFile("classpath:20191106T0930Z__ENTSOE_EQBD_001.xml")));
 
         MockMultipartFile file2 = new MockMultipartFile("file", "20191106T0930Z__ENTSOE_TPBD_001.xml",
-                "text/xml", new FileInputStream(ResourceUtils.getFile("classpath:20191106T0930Z__ENTSOE_TPBD_001.xml")));
+                MediaType.TEXT_XML_VALUE, new FileInputStream(ResourceUtils.getFile("classpath:20191106T0930Z__ENTSOE_TPBD_001.xml")));
 
         MockMultipartFile file3 = new MockMultipartFile("file", "20201106T0930Z__ENTSOE_EQBD_001.xml",
-                "text/xml", new FileInputStream(ResourceUtils.getFile("classpath:20201106T0930Z__ENTSOE_EQBD_001.xml")));
+                MediaType.TEXT_XML_VALUE, new FileInputStream(ResourceUtils.getFile("classpath:20201106T0930Z__ENTSOE_EQBD_001.xml")));
 
         MockMultipartFile file4 = new MockMultipartFile("file", "20201106T0930Z__ENTSOE_TPBD_001.xml",
-                "text/xml", new FileInputStream(ResourceUtils.getFile("classpath:20201106T0930Z__ENTSOE_TPBD_001.xml")));
+                MediaType.TEXT_XML_VALUE, new FileInputStream(ResourceUtils.getFile("classpath:20201106T0930Z__ENTSOE_TPBD_001.xml")));
 
         MockMultipartHttpServletRequestBuilder builderOk1 = MockMvcRequestBuilders.multipart("/v1/boundaries");
         builderOk1.with(request -> {
@@ -219,9 +208,9 @@ public class CgmesBoundaryControllerTest {
     }
 
     @Test
-    public void testTsosList() throws Exception {
+    void testTsosList() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "tsos.json",
-            "application/json", new FileInputStream(ResourceUtils.getFile("classpath:tsos.json")));
+            MediaType.APPLICATION_JSON_VALUE, new FileInputStream(ResourceUtils.getFile("classpath:tsos.json")));
 
         MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/tsos");
         builderOk.with(request -> {
@@ -249,9 +238,9 @@ public class CgmesBoundaryControllerTest {
     }
 
     @Test
-    public void testBusinessProcessesList() throws Exception {
+    void testBusinessProcessesList() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "business_processes.json",
-            "application/json", new FileInputStream(ResourceUtils.getFile("classpath:business_processes.json")));
+            MediaType.APPLICATION_JSON_VALUE, new FileInputStream(ResourceUtils.getFile("classpath:business_processes.json")));
 
         MockMultipartHttpServletRequestBuilder builderOk = MockMvcRequestBuilders.multipart("/v1/business-processes");
         builderOk.with(request -> {
