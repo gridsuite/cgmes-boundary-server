@@ -100,8 +100,6 @@
                 <artifactId>json</artifactId>
                 <version>${org.json.version}</version>
             </dependency>
-
-            <!-- project specific dependencies -->
         </dependencies>
     </dependencyManagement>
 
