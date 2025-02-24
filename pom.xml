@@ -42,7 +42,7 @@
     </developers>
 
     <properties>
-        <gridsuite-dependencies.version>37.0.0</gridsuite-dependencies.version>
+        <gridsuite-dependencies.version>38.0.0</gridsuite-dependencies.version>
         <org.json.version>20200518</org.json.version>
         <liquibase-hibernate-package>org.gridsuite.cgmes.boundary.server</liquibase-hibernate-package>
     </properties>
