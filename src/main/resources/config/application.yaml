@@ -5,3 +5,6 @@ spring:
 powsybl-ws:
   database:
     name: cgmes_boundary
+  autoconfigure:
+    base-exception-handler:
+      enable: false
