@@ -50,7 +50,7 @@ class CgmesBoundaryService {
     private static final String TSOS_LIST_NAME = "tsos";
     private static final String BUSINESS_PROCESS_LIST_NAME = "businessProcesses";
 
-    public CgmesBoundaryService(BoundaryRepository boundaryRepository,
+    CgmesBoundaryService(BoundaryRepository boundaryRepository,
                                 TsosRepository tsosRepository,
                                 BusinessProcessesRepository businessProcessesRepository) {
         this.boundaryRepository = boundaryRepository;

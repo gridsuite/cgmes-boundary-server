@@ -114,7 +114,9 @@ class CgmesBoundaryControllerTest {
             .contentType(APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON))
-            .andExpect(content().json("[{\"id\":\"urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71\",\"filename\":\"20191106T0930Z__ENTSOE_EQBD_001.xml\",\"scenarioTime\":\"2020-06-29T00:00:00\"},{\"id\":\"urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358\",\"filename\":\"20191106T0930Z__ENTSOE_TPBD_001.xml\",\"scenarioTime\":\"2020-06-29T00:00:00\"}]"));
+            .andExpect(content().json(
+                    "[{\"id\":\"urn:uuid:3e3f7738-aab9-4284-a965-71d5cd151f71\",\"filename\":\"20191106T0930Z__ENTSOE_EQBD_001.xml\",\"scenarioTime\":\"2020-06-29T00:00:00\"},"
+                            + "{\"id\":\"urn:uuid:f1582c44-d9e2-4ea0-afdc-dba189ab4358\",\"filename\":\"20191106T0930Z__ENTSOE_TPBD_001.xml\",\"scenarioTime\":\"2020-06-29T00:00:00\"}]"));
 
         // get list of boundary set
         mvc.perform(get("/v1/boundaries")
