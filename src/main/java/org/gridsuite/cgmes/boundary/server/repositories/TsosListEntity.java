@@ -6,13 +6,12 @@
  */
 package org.gridsuite.cgmes.boundary.server.repositories;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
-
 /**
- * @author Franck Lecuyer <franck.lecuyer at rte-france.com
+ * @author Franck Lecuyer <franck.lecuyer at rte-france.com>
  */
 @NoArgsConstructor
 @Getter
